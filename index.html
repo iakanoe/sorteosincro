@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <script>
+        const initialconfig = {
+            Analisteria: ['Tobi'],
+            Android: ['Leo', 'Iaka', 'Charly', 'Rodri', 'Marce'],
+            iOS: ['Fran', 'Eze'],
+            BFFA: ['Diegote', 'Eros', 'Leo'],
+            QA: ['Yani', 'Yoha', 'Nico']
+        };
+
+        window.onload = function () {
+            document.getElementById('config').value = JSON.stringify(initialconfig, null, ' ');
+            refreshHeight();
+        };
+
+        function refreshHeight() {
+            const el = document.getElementById('config');
+            el.style.height = "1px";
+            el.style.height = (10 + el.scrollHeight) + "px";
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function createElementFromHTML(htmlString) {
+            var div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+
+            // Change this to div.childNodes to support multiple top-level nodes
+            return div.firstChild;
+        }
+
+        function sortear() {
+            const config = JSON.parse(document.getElementById('config').value);
+            const keys = shuffle(Object.keys(config));
+            const d = document.getElementById('res');
+            d.innerHTML = "";
+
+            for (let k of keys) {
+                let n = [];
+                n.push(createElementFromHTML(`<h4>${k}</h4>`));
+                shuffle(config[k]).forEach(el => n.push(createElementFromHTML(`<li>${el}</li>`)));
+                n.forEach(el => d.appendChild(el));
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>sorteo sincro</h1>
+    <h3>a falta de proveedor...</h3>
+    <button onclick="sortear()">Sortear</button><br>
+    <div style="width: 400px; height: 600px; float: left">
+        <h3>Resultados</h3>
+        <ol id="res"></ol>
+    </div>
+    <div style="margin-left: 50px;">
+        <h3>Configuración</h3>
+        <textarea id="config" onkeyup="refreshHeight()"></textarea><br>
+    </div>
+</body>
+
+</html>
