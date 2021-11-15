@@ -3,6 +3,8 @@
 
 <head>
     <title>sorteo sincro</title>
+    <script type="text/javascript" src="https://github.com/niklasvh/html2canvas/releases/download/0.4.1/html2canvas.js"></script>
+
     <script>
         const initialconfig = {
             Analisteria: ['Tobi'],
@@ -45,6 +47,7 @@
             const config = JSON.parse(document.getElementById('config').value);
             const keys = shuffle(Object.keys(config));
             const d = document.getElementById('res');
+
             d.innerHTML = "";
 
             for (let k of keys) {
@@ -54,20 +57,42 @@
                 n.forEach(el => d.appendChild(el));
             }
         }
+        function copy(){
+            html2canvas(document.getElementById("res"), {
+              onrendered: function(canvas) {
+              const context = canvas.getContext('2d');
+              context.save();
+              context.globalCompositeOperation = 'destination-over';
+              context.fillStyle = 'white';
+              context.fillRect(0, 0, canvas.width, canvas.height);
+              context.restore();
+              canvas.toBlob(function(blob) { 
+                 const item = new ClipboardItem({ "image/png": blob });
+                 navigator.clipboard.write([item]); 
+              });                
+             }
+            });
+        }
     </script>
 </head>
 
 <body>
     <h1>sorteo sincro</h1>
     <h3>a falta de proveedor...</h3>
-    <button onclick="sortear()">Sortear</button><br>
-    <div style="width: 400px; height: 600px; float: left">
+    <div style="display:flex">
+      <button onclick="sortear()">Sortear</button><br>
+      <button onclick="copy()">Copiar</button><br>
+    </div>
+    <div  style="width: 250px; height: 600px; float: left">
         <h3>Resultados</h3>
         <ol id="res"></ol>
     </div>
     <div style="margin-left: 50px;">
         <h3>Configuración</h3>
-        <textarea id="config" onkeyup="refreshHeight()"></textarea><br>
+        <div class="sorteo" id="sorteo">
+
+        <textarea id="config" class="myclass" onkeyup="refreshHeight()"></textarea><br>
+        </div>
     </div>
     <img src="fran.png" style="margin-left: 50px;"></img>
 </body>
